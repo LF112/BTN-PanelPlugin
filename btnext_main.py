@@ -12,12 +12,13 @@
 # | Author: LF112 (futiwolf) <lf@lf112.net>
 # | Made with love by LF112 [https://lf112.net]
 # +-------------------------------------------------------------------
+import re
 import sys,os
 
 panelPath = os.getenv('BT_PANEL')
 if not panelPath: panelPath = '/www/server/panel'
 
-os.chdir(panelPath);
+os.chdir(panelPath)
 sys.path.append("class/")
 import public
 
@@ -34,6 +35,14 @@ class btnext_main:
     def getOverTime(self, get):
         return {'status': True, 'data': public.get_session_timeout()} # > 从内部 public 库中读取面板登录状态过期时间
     
+    # 获取面板离线模式状态
+    def getPanelLocal(self, get):
+        return public.returnMsg(True, public.is_local())
+    
+    # 获取面板开发者模式状态
+    def getPanelDevMode(self, get):
+        return public.returnMsg(True, public.is_debug())
+    
     #=> BTN 前端请求扩展 | 同上 ↑
     # 设置面板登录状态过期时间
     def setOverTime(self, get):
@@ -49,3 +58,8 @@ class btnext_main:
             return public.returnMsg(True, '设置完成！')
         else:
             return public.returnMsg(False, '超时时间未改变')
+        
+    # 设置面板标题
+    def setPanelTitle(self, get):
+        public.SetConfigValue('title',public.xssencode2(get.webname))
+        return public.returnMsg(True, '设置完成！')
