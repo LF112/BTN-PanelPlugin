@@ -27,4 +27,25 @@ class btnext_main:
         pass
 
     def whoami(self, get):
-        return {"status": True, "msg": "I'm BTN, Working for you!"}
+        return {'status': True, 'msg': "I'm BTN, Working for you!"}
+    
+    #=> BTN 前端数据扩展 | 基于宝塔内部未逻辑未公开调用的数据
+    # 获取面板登录状态过期时间
+    def getOverTime(self, get):
+        return {'status': True, 'data': public.get_session_timeout()} # > 从内部 public 库中读取面板登录状态过期时间
+    
+    #=> BTN 前端请求扩展 | 同上 ↑
+    # 设置面板登录状态过期时间
+    def setOverTime(self, get):
+        session_StoragePath = 'data/session_timeout.pl' # > 宝塔内部存储过期时间的文件地址 | '为啥不用数据库啊'
+        session_timeout = int(get.time) # > 读取传入的过期时间
+        s_time_tmp = public.readFile(session_StoragePath)
+        if not s_time_tmp: s_time_tmp = '0' # > 如果文件不存在, 则初始化为 0
+        if int(s_time_tmp) != session_timeout:
+            if session_timeout < 300: return public.returnMsg(False, '超时时间不能小于 300 秒')
+            if session_timeout > 86400: return public.returnMsg(False, '超时时间不能大于 86400 秒')
+            public.writeFile(session_StoragePath, str(session_timeout)) # > 写入新的过期时间
+            public.restart_panel()  # > 重启面板
+            return public.returnMsg(True, '设置完成！')
+        else:
+            return public.returnMsg(False, '超时时间未改变')
