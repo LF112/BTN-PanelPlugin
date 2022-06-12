@@ -1,0 +1,9 @@
+{
+    "title": "BTN",
+    "name": "btnext",
+    "ps": "「宝塔下一代现代化面板」 - BT NEXT",
+    "versions": "0.1",
+    "checks": "/www/server/panel/plugin/btn",
+    "author": "LF112",
+    "home": "https://btn.lf112.net"
+}
